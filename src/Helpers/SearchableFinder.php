@@ -16,6 +16,7 @@ namespace Algolia\ScoutExtended\Helpers;
 use Error;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Laravel\Scout\ModelObserver;
 use Laravel\Scout\Searchable;
 use RuntimeException;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -75,6 +76,10 @@ class SearchableFinder
      */
     private function isSearchableModel($class): bool
     {
+        if (ModelObserver::syncingDisabledFor($class)) {
+            return false;
+        }
+
         return in_array(Searchable::class, class_uses_recursive($class), true);
     }
 
